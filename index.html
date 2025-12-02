@@ -1,0 +1,1746 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meditrack - Complete Indian Health Management Platform</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Enhanced Base Styles */
+        :root {
+            --primary: #2c7fb8;
+            --primary-light: #e1f0fa;
+            --secondary: #7fbc41;
+            --dark: #2c3e50;
+            --light: #f8f9fa;
+            --gray: #6c757d;
+            --white: #ffffff;
+            --error: #e74c3c;
+            --success: #2ecc71;
+            --warning: #f39c12;
+            --doctor-color: #9c27b0;
+            --patient-color: #2196f3;
+            --emergency: #e74c3c;
+            --telemedicine: #8e44ad;
+            --ai-color: #00b894;
+            --ayurveda: #d35400;
+            --yoga: #27ae60;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+        
+        body {
+            background-color: var(--light);
+            color: var(--dark);
+            line-height: 1.6;
+        }
+        
+        /* Dark Mode Styles */
+        body.dark-mode {
+            --light: #2c3e50;
+            --dark: #ecf0f1;
+            --white: #34495e;
+            --primary-light: #3a506b;
+            --gray: #95a5a6;
+        }
+        body.dark-mode .modal-content, body.dark-mode footer {
+            background-color: #2c3e50;
+        }
+        body.dark-mode .dashboard-card, body.dark-mode .feature-card {
+            background-color: var(--white);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        body.dark-mode .form-control {
+            background-color: #3a506b;
+            color: var(--dark);
+            border-color: #556a86;
+        }
+        body.dark-mode .hero, body.dark-mode .metric, body.dark-mode .stat-card {
+             background: #34495e;
+        }
+        body.dark-mode .user-type-btn {
+            background-color: #3a506b;
+        }
+        body.dark-mode .user-type-btn.active {
+            background-color: var(--primary);
+        }
+        body.dark-mode .user-type-btn.doctor.active { background-color: var(--doctor-color); }
+        body.dark-mode .user-type-btn.patient.active { background-color: var(--patient-color); }
+
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 15px;
+        }
+        
+        /* Security Badge */
+        .security-badge {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: var(--success);
+            color: white;
+            padding: 10px 15px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            z-index: 1000;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.2);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        /* Typography */
+        h1, h2, h3, h4 {
+            font-weight: 600;
+            line-height: 1.2;
+            margin-bottom: 1rem;
+        }
+        
+        h1 { font-size: 2.5rem; }
+        h2 { font-size: 2rem; }
+        p { margin-bottom: 1rem; }
+        
+        /* Buttons */
+        .btn {
+            display: inline-block;
+            padding: 12px 24px;
+            background-color: var(--primary);
+            color: #ffffff;
+            text-decoration: none;
+            border: none;
+            border-radius: 4px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+        }
+        
+        .btn:hover {
+            background-color: #1d6fa5;
+            transform: translateY(-2px);
+        }
+        
+        .btn-outline { background-color: transparent; border: 2px solid var(--primary); color: var(--primary); }
+        .btn-outline:hover { background-color: var(--primary-light); }
+        .btn-doctor { background-color: var(--doctor-color); }
+        .btn-doctor:hover { background-color: #7b1fa2; }
+        .btn-patient { background-color: var(--patient-color); }
+        .btn-patient:hover { background-color: #1976d2; }
+        .btn-success { background-color: var(--success); }
+        .btn-success:hover { background-color: #27ae60; }
+        .btn-danger { background-color: var(--error); }
+        .btn-danger:hover { background-color: #c0392b; }
+        .btn-warning { background-color: var(--warning); }
+        .btn-warning:hover { background-color: #e67e22; }
+        .btn-telemedicine { background-color: var(--telemedicine); }
+        .btn-telemedicine:hover { background-color: #7d3c98; }
+        .btn-ai { background-color: var(--ai-color); }
+        .btn-ai:hover { background-color: #00a085; }
+        .btn-emergency { background-color: var(--emergency); animation: pulse 2s infinite; }
+        .btn-ayurveda { background-color: var(--ayurveda); }
+        .btn-ayurveda:hover { background-color: #a84300; }
+        .btn-yoga { background-color: var(--yoga); }
+        .btn-yoga:hover { background-color: #219653; }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        
+        /* Header */
+        header {
+            background-color: var(--white);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .header-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 0;
+        }
+        
+        .logo { font-size: 1.5rem; font-weight: 700; color: var(--primary); text-decoration: none; display: flex; align-items: center; gap: 10px; }
+        .logo span { color: var(--secondary); }
+        .logo i { font-size: 1.8rem; }
+        
+        nav ul { display: flex; list-style: none; align-items: center; }
+        nav ul li { margin-left: 2rem; }
+        nav ul li a { text-decoration: none; color: var(--dark); font-weight: 500; transition: color 0.3s ease; }
+        nav ul li a:hover { color: var(--primary); }
+        .mobile-menu { display: none; font-size: 1.5rem; cursor: pointer; }
+        
+        /* Hero Section */
+        .hero {
+            padding: 5rem 0;
+            background: linear-gradient(135deg, var(--primary-light) 0%, #e1f0fa 100%);
+            position: relative;
+            overflow: hidden;
+        }
+        .hero-content { display: flex; align-items: center; justify-content: space-between; position: relative; z-index: 1; }
+        .hero-text { flex: 1; padding-right: 2rem; }
+        .hero-features { display: flex; gap: 1rem; margin: 1.5rem 0; flex-wrap: wrap; }
+        .hero-feature { background: rgba(255,255,255,0.8); padding: 0.5rem 1rem; border-radius: 20px; font-size: 0.9rem; display: flex; align-items: center; gap: 5px; }
+        .hero-image { flex: 1; text-align: center; }
+        
+        /* Features Section */
+        .features { padding: 5rem 0; }
+        .section-title { text-align: center; margin-bottom: 3rem; }
+        .features-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem; }
+        
+        .feature-card {
+            background-color: var(--white);
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            transition: transform 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        .feature-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 4px; background: linear-gradient(90deg, var(--primary), var(--secondary)); }
+        .feature-card:hover { transform: translateY(-5px); }
+        .feature-icon { font-size: 2.5rem; color: var(--primary); margin-bottom: 1rem; }
+        
+        /* Enhanced Dashboard Styles */
+        .dashboard { display: none; padding: 2rem 0; min-height: 100vh; }
+        .dashboard-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; padding-bottom: 1rem; border-bottom: 1px solid #eee; flex-wrap: wrap; gap: 1rem; }
+        .user-info { display: flex; align-items: center; }
+        .user-avatar { width: 60px; height: 60px; border-radius: 50%; background-color: var(--primary); color: #ffffff; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 1.5rem; margin-right: 1rem; position: relative; }
+        .user-avatar.doctor { background-color: var(--doctor-color); }
+        .user-avatar.patient { background-color: var(--patient-color); }
+        .user-status { position: absolute; bottom: 2px; right: 2px; width: 12px; height: 12px; background: var(--success); border: 2px solid white; border-radius: 50%; }
+        .dashboard-actions { display: flex; gap: 1rem; flex-wrap: wrap; }
+        .dashboard-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem; }
+        
+        .dashboard-card {
+            background-color: var(--white);
+            padding: 1.5rem;
+            border-radius: 8px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            position: relative;
+        }
+        .dashboard-card.emergency { border-left: 4px solid var(--emergency); }
+        .dashboard-card.telemedicine { border-left: 4px solid var(--telemedicine); }
+        .dashboard-card.ai { border-left: 4px solid var(--ai-color); }
+        .dashboard-card.ayurveda { border-left: 4px solid var(--ayurveda); }
+        .dashboard-card.yoga { border-left: 4px solid var(--yoga); }
+        
+        .dashboard-card h3 { display: flex; align-items: center; margin-bottom: 1rem; padding-bottom: 0.5rem; border-bottom: 1px solid #eee; }
+        .dashboard-card h3 i { margin-right: 0.5rem; color: var(--primary); }
+        
+        /* Health Metrics */
+        .health-metrics { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 1rem; margin-top: 1rem; }
+        .metric { text-align: center; padding: 1rem; background: var(--primary-light); border-radius: 8px; }
+        .metric-value { font-size: 1.5rem; font-weight: bold; color: var(--primary); }
+        .metric-label { font-size: 0.8rem; color: var(--gray); }
+        
+        /* Enhanced Lists */
+        .appointment-list, .prescription-list, .patient-list, .medication-list, .notification-list { list-style: none; }
+        .appointment-list li, .prescription-list li, .patient-list li, .medication-list li, .notification-list li { padding: 0.75rem 0; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; align-items: center; }
+        .appointment-list li:last-child, .prescription-list li:last-child, .patient-list li:last-child, .medication-list li:last-child, .notification-list li:last-child { border-bottom: none; }
+        .list-item-content { flex: 1; }
+        .list-item-actions { display: flex; gap: 0.5rem; }
+        
+        /* Badges */
+        .badge { display: inline-block; padding: 3px 8px; border-radius: 12px; font-size: 0.75rem; font-weight: 600; margin-left: 0.5rem; }
+        .badge-success { background-color: #e8f5e9; color: #2e7d32; }
+        .badge-warning { background-color: #fff8e1; color: #f57c00; }
+        .badge-info { background-color: #e3f2fd; color: #1565c0; }
+        .badge-danger { background-color: #ffebee; color: #c62828; }
+        .badge-telemedicine { background-color: #f3e5f5; color: #7b1fa2; }
+        .badge-ai { background-color: #e0f2f1; color: #00695c; }
+        .badge-ayurveda { background-color: #fbe9e7; color: #d35400; }
+        .badge-yoga { background-color: #e8f5e8; color: #27ae60; }
+        
+        /* Action Buttons */
+        .appointment-actions, .medication-actions { margin-top: 0.5rem; display: flex; gap: 0.5rem; flex-wrap: wrap; }
+        .appointment-actions .btn, .medication-actions .btn { padding: 5px 10px; font-size: 0.8rem; }
+        
+        /* Quick Actions Grid */
+        .quick-actions-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin-top: 1rem;
+        }
+        .quick-action-btn {
+            padding: 15px 10px;
+            background: var(--primary-light);
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 5px;
+            font-size: 0.8rem;
+        }
+        .quick-action-btn:hover {
+            background: var(--primary);
+            color: white;
+            transform: translateY(-2px);
+        }
+        
+        /* Enhanced Modals */
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.5); z-index: 1000; align-items: center; justify-content: center; padding: 1rem; }
+        .modal-content { background-color: var(--white); padding: 2rem; border-radius: 8px; width: 90%; max-width: 500px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); max-height: 90vh; overflow-y: auto; position: relative; }
+        .modal-large { max-width: 800px; }
+        .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; padding-bottom: 1rem; border-bottom: 1px solid #eee; }
+        .close-modal { font-size: 1.5rem; cursor: pointer; color: var(--gray); background: none; border: none; }
+        
+        /* Form Enhancements */
+        .user-type-selector { display: flex; margin-bottom: 1.5rem; border-radius: 4px; overflow: hidden; border: 1px solid #ddd; }
+        .user-type-btn { flex: 1; padding: 10px; text-align: center; background-color: #f8f9fa; cursor: pointer; transition: all 0.3s ease; }
+        .user-type-btn.active { background-color: var(--primary); color: #ffffff; }
+        .user-type-btn.doctor.active { background-color: var(--doctor-color); }
+        .user-type-btn.patient.active { background-color: var(--patient-color); }
+        .form-group { margin-bottom: 1.5rem; }
+        .form-group label { display: block; margin-bottom: 0.5rem; font-weight: 500; }
+        .form-control { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 4px; font-size: 1rem; transition: border-color 0.3s ease; }
+        .form-control:focus { border-color: var(--primary); outline: none; box-shadow: 0 0 0 3px rgba(44, 127, 184, 0.1); }
+        
+        /* Doctor Selection Styles */
+        .doctor-option {
+            display: flex;
+            align-items: center;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            margin-bottom: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .doctor-option:hover {
+            background-color: var(--primary-light);
+            border-color: var(--primary);
+        }
+        .doctor-option.selected {
+            background-color: var(--primary-light);
+            border-color: var(--primary);
+        }
+        .doctor-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: var(--doctor-color);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            margin-right: 15px;
+        }
+        .doctor-info {
+            flex: 1;
+        }
+        .doctor-specialty {
+            font-size: 0.8rem;
+            color: var(--gray);
+        }
+        
+        /* AI Chat Interface */
+        .chat-container { height: 400px; border: 1px solid #ddd; border-radius: 8px; overflow: hidden; display: flex; flex-direction: column; }
+        .chat-messages { flex: 1; padding: 1rem; overflow-y: auto; background: #f9f9f9; }
+        body.dark-mode .chat-messages { background: #3a506b; }
+        .chat-message { margin-bottom: 1rem; padding: 0.75rem; border-radius: 8px; max-width: 80%; }
+        .chat-message.user { background: var(--primary); color: #ffffff; margin-left: auto; }
+        .chat-message.ai { background: var(--white); border: 1px solid #ddd; }
+        body.dark-mode .chat-message.ai { border: 1px solid #556a86; }
+        .chat-input { display: flex; padding: 1rem; border-top: 1px solid #ddd; background: var(--white); }
+        .chat-input input { flex: 1; padding: 0.5rem; border: 1px solid #ddd; border-radius: 4px; margin-right: 0.5rem; }
+        
+        /* Enhanced Footer */
+        footer { background-color: var(--dark); color: #ffffff; padding: 3rem 0 1.5rem; }
+        .footer-content { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 2rem; margin-bottom: 2rem; }
+        .footer-column h3 { font-size: 1.2rem; margin-bottom: 1.5rem; position: relative; }
+        .footer-column h3::after { content: ''; position: absolute; bottom: -8px; left: 0; width: 40px; height: 2px; background-color: var(--primary); }
+        .footer-column ul { list-style: none; }
+        .footer-column ul li { margin-bottom: 0.8rem; }
+        .footer-column ul li a { color: #bdc3c7; text-decoration: none; transition: color 0.3s ease; }
+        .footer-column ul li a:hover { color: #ffffff; }
+        .copyright { text-align: center; padding-top: 1.5rem; border-top: 1px solid rgba(255,255,255,0.1); color: #bdc3c7; font-size: 0.9rem; }
+
+        /* Toast Notification Styles */
+        #toast-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 2000;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .toast {
+            background-color: var(--dark);
+            color: var(--light);
+            padding: 15px 20px;
+            border-radius: 5px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.2);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            opacity: 0;
+            transform: translateX(100%);
+            animation: slideIn 0.5s forwards, fadeOut 0.5s 4.5s forwards;
+        }
+        .toast.success { border-left: 5px solid var(--success); }
+        .toast.error { border-left: 5px solid var(--error); }
+        .toast.info { border-left: 5px solid var(--primary); }
+        @keyframes slideIn { to { opacity: 1; transform: translateX(0); } }
+        @keyframes fadeOut { from { opacity: 1; } to { opacity: 0; transform: translateX(100%); } }
+
+        /* Dark Mode Toggle Styles */
+        .theme-switch-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .theme-switch {
+            display: inline-block;
+            height: 24px;
+            position: relative;
+            width: 48px;
+        }
+        .theme-switch input {
+            display:none;
+        }
+        .slider {
+            background-color: #ccc;
+            bottom: 0;
+            cursor: pointer;
+            left: 0;
+            position: absolute;
+            right: 0;
+            top: 0;
+            transition: .4s;
+            border-radius: 24px;
+        }
+        .slider:before {
+            background-color: #fff;
+            bottom: 4px;
+            content: "";
+            height: 16px;
+            left: 4px;
+            position: absolute;
+            transition: .4s;
+            width: 16px;
+            border-radius: 50%;
+        }
+        input:checked + .slider {
+            background-color: var(--primary);
+        }
+        input:checked + .slider:before {
+            transform: translateX(24px);
+        }
+        
+        /* Indian Healthcare Specific Styles */
+        .indian-health-section {
+            background: linear-gradient(135deg, #ff9933 0%, #ffffff 50%, #138808 100%);
+            padding: 4rem 0;
+            text-align: center;
+        }
+        .schemes-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+        .scheme-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 8px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        /* Doctor Appointments Popup Styles */
+        .appointments-popup {
+            background-color: var(--white);
+            padding: 2rem;
+            border-radius: 8px;
+            width: 90%;
+            max-width: 700px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            max-height: 90vh;
+            overflow-y: auto;
+            position: relative;
+            animation: fadeIn 0.5s ease;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .appointments-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.5rem 0;
+        }
+        .appointments-table th, .appointments-table td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+        .appointments-table th {
+            background-color: var(--primary-light);
+            color: var(--primary);
+            font-weight: 600;
+        }
+        .appointments-table tr:hover {
+            background-color: rgba(0,0,0,0.02);
+        }
+        .visit-type {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+        .visit-type.first-time {
+            background-color: #e8f5e9;
+            color: #2e7d32;
+        }
+        .visit-type.regular {
+            background-color: #e3f2fd;
+            color: #1565c0;
+        }
+        .appointments-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+        
+        /* Doctor Notification Styles */
+        .doctor-notification {
+            position: fixed;
+            top: 100px;
+            right: 20px;
+            background: var(--doctor-color);
+            color: white;
+            padding: 15px 20px;
+            border-radius: 8px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            z-index: 999;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+            animation: slideInRight 0.5s ease;
+        }
+        @keyframes slideInRight {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        .doctor-notification:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+        }
+        .notification-badge {
+            background: var(--emergency);
+            color: white;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+        
+        /* Improved AI Assistant Styles */
+        .ai-suggestions {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 1rem;
+            flex-wrap: wrap;
+        }
+        .ai-suggestion-btn {
+            padding: 8px 12px;
+            background: var(--primary-light);
+            border: none;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .ai-suggestion-btn:hover {
+            background: var(--primary);
+            color: white;
+        }
+        .chat-message.ai .message-time {
+            font-size: 0.7rem;
+            color: var(--gray);
+            margin-top: 5px;
+            text-align: right;
+        }
+        
+        /* BMI Calculator Styles */
+        .bmi-calculator {
+            background: var(--primary-light);
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin-top: 1rem;
+        }
+        .bmi-result {
+            text-align: center;
+            margin-top: 1rem;
+            padding: 1rem;
+            border-radius: 8px;
+            background: white;
+            display: none;
+        }
+        .bmi-category {
+            font-size: 1.2rem;
+            font-weight: bold;
+            margin-top: 0.5rem;
+        }
+        .bmi-normal { color: var(--success); }
+        .bmi-underweight { color: var(--warning); }
+        .bmi-overweight { color: var(--warning); }
+        .bmi-obese { color: var(--error); }
+        
+        /* Enhanced Doctor Portal Styles */
+        .patient-card {
+            background: white;
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            border-left: 4px solid var(--primary);
+        }
+        .patient-card.critical { border-left-color: var(--error); }
+        .patient-card.warning { border-left-color: var(--warning); }
+        .patient-card.success { border-left-color: var(--success); }
+        
+        .patient-vitals {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+            gap: 0.5rem;
+            margin-top: 0.5rem;
+        }
+        .vital-item {
+            text-align: center;
+            padding: 0.5rem;
+            background: #f8f9fa;
+            border-radius: 4px;
+        }
+        .vital-value {
+            font-weight: bold;
+            font-size: 1.1rem;
+        }
+        .vital-label {
+            font-size: 0.7rem;
+            color: var(--gray);
+        }
+        
+        .progress-container {
+            margin: 1rem 0;
+        }
+        .progress-bar {
+            height: 8px;
+            background: #e9ecef;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        .progress-fill {
+            height: 100%;
+            background: var(--success);
+            transition: width 0.5s ease;
+        }
+        
+        .soap-template {
+            background: #f8f9fa;
+            padding: 1rem;
+            border-radius: 4px;
+            margin-top: 1rem;
+            display: none;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero-content { flex-direction: column; }
+            .hero-text { padding-right: 0; margin-bottom: 2rem; text-align: center; }
+            nav ul { display: none; }
+            .mobile-menu { display: block; }
+            .dashboard-header { flex-direction: column; align-items: flex-start; }
+            .dashboard-actions { width: 100%; justify-content: center; }
+            .quick-actions-grid { grid-template-columns: 1fr; }
+            .appointments-table { display: block; overflow-x: auto; }
+            .doctor-notification { top: 80px; right: 10px; left: 10px; }
+            .patient-vitals { grid-template-columns: repeat(2, 1fr); }
+        }
+    </style>
+</head>
+<body>
+    <div id="toast-container"></div>
+    
+    <div class="security-badge">
+        <i class="fas fa-shield-alt"></i>
+        <span>HIPAA Compliant • End-to-End Encrypted</span>
+    </div>
+
+    <!-- Doctor Notification -->
+    <div class="doctor-notification" id="doctor-notification" style="display: none;">
+        <div class="notification-badge">5</div>
+        <div>
+            <strong>Hello Doctor!</strong>
+            <div>See today's appointments</div>
+        </div>
+        <i class="fas fa-chevron-right"></i>
+    </div>
+
+    <header>
+        <div class="container header-container">
+            <a href="#" class="logo">
+                <i class="fas fa-heartbeat"></i>
+                Medi<span>track</span>
+            </a>
+            <nav>
+                <ul>
+                    <li><a href="#features">Features</a></li>
+                    <li><a href="#security">Security</a></li>
+                    <li><a href="#indian-health">Indian Healthcare</a></li>
+                    <li>
+                        <div class="theme-switch-wrapper">
+                            <i class="fas fa-sun"></i>
+                            <label class="theme-switch" for="dark-mode-toggle">
+                                <input type="checkbox" id="dark-mode-toggle" />
+                                <span class="slider"></span>
+                            </label>
+                            <i class="fas fa-moon"></i>
+                        </div>
+                    </li>
+                    <li><a href="#" class="btn btn-outline" id="login-btn">
+                        <i class="fas fa-sign-in-alt"></i> Login
+                    </a></li>
+                </ul>
+            </nav>
+            <div class="mobile-menu">☰</div>
+        </div>
+    </header>
+
+    <section class="hero">
+        <div class="container hero-content">
+            <div class="hero-text">
+                <h1>Your Complete Indian Health Management Platform</h1>
+                <p>Meditrack combines advanced medical technology with enterprise-grade security to deliver comprehensive healthcare solutions for patients and providers across India.</p>
+                <div class="hero-features">
+                    <div class="hero-feature"><i class="fas fa-shield-alt"></i> HIPAA Compliant</div>
+                    <div class="hero-feature"><i class="fas fa-video"></i> Telemedicine Ready</div>
+                    <div class="hero-feature"><i class="fas fa-robot"></i> AI Health Assistant</div>
+                    <div class="hero-feature"><i class="fas fa-spa"></i> Ayurveda & Yoga</div>
+                </div>
+                <a href="#" class="btn" id="get-started-btn"><i class="fas fa-rocket"></i> Get Started</a>
+                <button class="btn btn-emergency" id="emergency-btn"><i class="fas fa-ambulance"></i> Emergency Access</button>
+            </div>
+            <div class="hero-image">
+                 <div style="background: linear-gradient(135deg, #ff9933 0%, #ffffff 50%, #138808 100%); height: 300px; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: #2c3e50; flex-direction: column; gap: 1rem;">
+                    <i class="fas fa-laptop-medical" style="font-size: 4rem;"></i>
+                    <h3>Integrated Health Dashboard</h3>
+                    <p>Real-time monitoring & AI insights</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="features" id="security">
+        <div class="container">
+            <div class="section-title">
+                <h2>Enterprise-Grade Security</h2>
+                <p>Your health data is protected with military-grade encryption and compliance standards</p>
+            </div>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon"><i class="fas fa-lock"></i></div>
+                    <h3>End-to-End Encryption</h3>
+                    <p>All medical data encrypted in transit and at rest with AES-256 encryption.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon"><i class="fas fa-user-shield"></i></div>
+                    <h3>HIPAA Compliant</h3>
+                    <p>Fully compliant with healthcare privacy regulations and audit requirements.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon"><i class="fas fa-fingerprint"></i></div>
+                    <h3>Multi-Factor Auth</h3>
+                    <p>Biometric and 2FA options for enhanced account security and access control.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="indian-health-section" id="indian-health">
+        <div class="container">
+            <div class="section-title">
+                <h2>Indian Healthcare Integration</h2>
+                <p>Connecting you with India's healthcare ecosystem</p>
+            </div>
+            <div class="schemes-grid">
+                <div class="scheme-card">
+                    <h3><i class="fas fa-shield-alt"></i> Ayushman Bharat</h3>
+                    <p>Check eligibility and access benefits under India's national health protection scheme.</p>
+                    <button class="btn btn-outline" style="margin-top: 10px;">Check Eligibility</button>
+                </div>
+                <div class="scheme-card">
+                    <h3><i class="fas fa-pills"></i> Jan Aushadhi</h3>
+                    <p>Access affordable generic medicines through Pradhan Mantri Bharatiya Janaushadhi Pariyojana.</p>
+                    <button class="btn btn-outline" style="margin-top: 10px;">Find Stores</button>
+                </div>
+                <div class="scheme-card">
+                    <h3><i class="fas fa-heartbeat"></i> e-Sanjeevani</h3>
+                    <p>Connect with government telemedicine services for remote consultations.</p>
+                    <button class="btn btn-outline" style="margin-top: 10px;">Connect Now</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="features" id="features">
+        <div class="container">
+            <div class="section-title">
+                <h2>Advanced Healthcare Features</h2>
+                <p>Comprehensive tools for modern healthcare management</p>
+            </div>
+            <div class="features-grid">
+                 <div class="feature-card"><div class="feature-icon"><i class="fas fa-file-medical"></i></div><h3>Smart Health Records</h3><p>AI-powered medical records with automatic symptom tracking and trend analysis.</p></div>
+                 <div class="feature-card"><div class="feature-icon"><i class="fas fa-video"></i></div><h3>Telemedicine Suite</h3><p>Integrated video consultations, screen sharing, and remote diagnostics.</p></div>
+                 <div class="feature-card"><div class="feature-icon"><i class="fas fa-pills"></i></div><h3>Medication Management</h3><p>Smart reminders, interaction checks, and automated refill management.</p></div>
+                 <div class="feature-card"><div class="feature-icon"><i class="fas fa-robot"></i></div><h3>AI Health Assistant</h3><p>24/7 symptom checking, health insights, and preventive care recommendations.</p></div>
+                 <div class="feature-card"><div class="feature-icon"><i class="fas fa-spa"></i></div><h3>Ayurveda & Yoga</h3><p>Personalized Ayurvedic recommendations and yoga asanas based on your health profile.</p></div>
+                 <div class="feature-card"><div class="feature-icon"><i class="fas fa-procedures"></i></div><h3>Emergency Response</h3><p>Critical information access for first responders and emergency contacts.</p></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Login Modal -->
+    <div class="modal" id="login-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Secure Login to Meditrack</h2>
+                <button class="close-modal">×</button>
+            </div>
+            <div class="user-type-selector">
+                <div class="user-type-btn patient active" data-type="patient">Patient</div>
+                <div class="user-type-btn doctor" data-type="doctor">Doctor</div>
+            </div>
+            <form id="login-form">
+                <div class="form-group">
+                    <label for="username">Username or Email</label>
+                    <input type="text" id="username" class="form-control" placeholder="Enter your username or email">
+                </div>
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" class="form-control" placeholder="Enter your password">
+                </div>
+                <button type="submit" class="btn btn-patient" id="login-submit" style="width: 100%;"><i class="fas fa-sign-in-alt"></i> Secure Login</button>
+            </form>
+             <div style="margin-top: 1.5rem; text-align: center;">
+    <p><strong>Patient:</strong> vedha@meditrack.com / 1234</p>
+    <p><strong>Doctor:</strong> dr.ram@meditrack.com / 1234</p>
+                </div>
+        </div>
+    </div>
+
+    <!-- Book Appointment Modal -->
+    <div class="modal" id="book-appointment-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2><i class="fas fa-calendar-plus"></i> Book New Appointment</h2>
+                <button class="close-modal">×</button>
+            </div>
+            <form id="appointment-form">
+                <div class="form-group">
+                    <label for="appointment-doctor">Select Doctor</label>
+                    <div id="doctor-selection">
+                        <div class="doctor-option" data-doctor="dr.ram">
+                            <div class="doctor-avatar">RK</div>
+                            <div class="doctor-info">
+                                <strong>Dr. Ram Kumar</strong>
+                                <div class="doctor-specialty">Cardiology</div>
+                            </div>
+                        </div>
+                        <div class="doctor-option" data-doctor="dr.arshiya">
+                            <div class="doctor-avatar">AS</div>
+                            <div class="doctor-info">
+                                <strong>Dr. Arshiya Sharma</strong>
+                                <div class="doctor-specialty">Gynecology</div>
+                            </div>
+                        </div>
+                        <div class="doctor-option" data-doctor="dr.anand">
+                            <div class="doctor-avatar">AP</div>
+                            <div class="doctor-info">
+                                <strong>Dr. Anand Patel</strong>
+                                <div class="doctor-specialty">Orthopedics</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="appointment-date">Preferred Date</label>
+                    <input type="date" id="appointment-date" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label for="appointment-time">Preferred Time</label>
+                    <select id="appointment-time" class="form-control" required>
+                        <option value="">Select time slot</option>
+                        <option value="09:00">09:00 AM</option>
+                        <option value="10:00">10:00 AM</option>
+                        <option value="11:00">11:00 AM</option>
+                        <option value="14:00">02:00 PM</option>
+                        <option value="15:00">03:00 PM</option>
+                        <option value="16:00">04:00 PM</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="appointment-type">Appointment Type</label>
+                    <select id="appointment-type" class="form-control" required>
+                        <option value="">Select type</option>
+                        <option value="video">Video Consultation</option>
+                        <option value="in-person">In-Person Visit</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="appointment-reason">Reason for Visit</label>
+                    <textarea id="appointment-reason" class="form-control" rows="3" placeholder="Briefly describe your symptoms or reason for appointment"></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary" style="width: 100%;"><i class="fas fa-calendar-check"></i> Book Appointment</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Improved AI Assistant Modal -->
+    <div class="modal" id="ai-assistant-modal">
+        <div class="modal-content modal-large">
+            <div class="modal-header">
+                <h2><i class="fas fa-robot"></i> AI Health Assistant</h2>
+                <button class="close-modal">×</button>
+            </div>
+            <div class="chat-container">
+                <div class="chat-messages" id="ai-chat-messages">
+                    <div class="chat-message ai">
+                        <strong>MediAI:</strong> Hello! I'm your AI health assistant. I can help you with:
+                        <div style="margin-top: 10px;">
+                            <div>• Symptom checking and analysis</div>
+                            <div>• Medication information</div>
+                            <div>• Ayurvedic remedies</div>
+                            <div>• Yoga recommendations</div>
+                            <div>• General health advice</div>
+                        </div>
+                        <div class="message-time">Just now</div>
+                    </div>
+                </div>
+                <div class="chat-input">
+                    <input type="text" id="ai-chat-input" placeholder="Describe your symptoms or ask a health question...">
+                    <button class="btn btn-primary" id="ai-send-btn"><i class="fas fa-paper-plane"></i> Send</button>
+                </div>
+            </div>
+            <div class="ai-suggestions">
+                <button class="ai-suggestion-btn" data-topic="headache"><i class="fas fa-head-side-virus"></i> Headache relief</button>
+                <button class="ai-suggestion-btn" data-topic="fever"><i class="fas fa-thermometer-full"></i> Fever management</button>
+                <button class="ai-suggestion-btn" data-topic="stress"><i class="fas fa-brain"></i> Stress reduction</button>
+                <button class="ai-suggestion-btn" data-topic="digestion"><i class="fas fa-stomach"></i> Digestion issues</button>
+                <button class="ai-suggestion-btn" data-topic="sleep"><i class="fas fa-bed"></i> Sleep problems</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Doctor Appointments Modal -->
+    <div class="modal" id="doctor-appointments-modal">
+        <div class="appointments-popup">
+            <div class="modal-header">
+                <h2><i class="fas fa-calendar-day"></i> Today's Appointments</h2>
+                <button class="close-modal">×</button>
+            </div>
+            <table class="appointments-table">
+                <thead>
+                    <tr>
+                        <th>Time</th>
+                        <th>Patient Name</th>
+                        <th>Visit Type</th>
+                        <th>Notes</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>09:00 AM</td>
+                        <td>Rajesh Kumar</td>
+                        <td><span class="visit-type first-time">First Visit</span></td>
+                        <td>Has diabetes, BP monitoring needed</td>
+                    </tr>
+                    <tr>
+                        <td>10:30 AM</td>
+                        <td>Priya Sharma</td>
+                        <td><span class="visit-type regular">Regular</span></td>
+                        <td>Follow-up for thyroid medication</td>
+                    </tr>
+                    <tr>
+                        <td>11:45 AM</td>
+                        <td>Anil Patel</td>
+                        <td><span class="visit-type regular">Regular</span></td>
+                        <td>Previous medication: Metformin, needs adjustment</td>
+                    </tr>
+                    <tr>
+                        <td>02:15 PM</td>
+                        <td>Sneha Reddy</td>
+                        <td><span class="visit-type first-time">First Visit</span></td>
+                        <td>Hypertension, family history of heart disease</td>
+                    </tr>
+                    <tr>
+                        <td>04:00 PM</td>
+                        <td>Vikram Singh</td>
+                        <td><span class="visit-type regular">Regular</span></td>
+                        <td>Post-surgery follow-up, wound healing check</td>
+                    </tr>
+                </tbody>
+            </table>
+            <div class="appointments-actions">
+                <button class="btn btn-outline" id="close-appointments-btn">Close</button>
+                <button class="btn btn-doctor" id="view-patient-details-btn">View Patient Details</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Patient Dashboard -->
+    <div class="dashboard" id="patient-dashboard">
+        <div class="container">
+            <div class="dashboard-header">
+                <div class="user-info">
+                    <div class="user-avatar patient">VP<div class="user-status"></div></div>
+                    <div>
+                        <h2 id="patient-welcome-name">Welcome back, Patient!</h2>
+                        <p>Your personal health dashboard.</p>
+                    </div>
+                </div>
+                <div class="dashboard-actions">
+                    <button class="btn btn-primary" id="book-appointment-btn"><i class="fas fa-calendar-plus"></i> Book Appointment</button>
+                    <button class="btn btn-ai" id="patient-ai-assistant"><i class="fas fa-robot"></i> AI Assistant</button>
+                    <button class="btn btn-telemedicine" id="patient-video-consult"><i class="fas fa-video"></i> Video Consult</button>
+                    <button class="btn btn-ayurveda" id="patient-ayurveda"><i class="fas fa-spa"></i> Ayurveda</button>
+                    <button class="btn btn-outline" id="patient-logout"><i class="fas fa-sign-out-alt"></i> Logout</button>
+                </div>
+            </div>
+            <div class="dashboard-grid">
+                <div class="dashboard-card">
+                    <h3><i class="fas fa-heartbeat"></i> Health Summary</h3>
+                    <div class="health-metrics">
+                        <div class="metric"><div class="metric-value">72</div><div class="metric-label">BPM</div></div>
+                        <div class="metric"><div class="metric-value">120/80</div><div class="metric-label">BP</div></div>
+                        <div class="metric"><div class="metric-value">98.6°F</div><div class="metric-label">Temp</div></div>
+                        <div class="metric"><div class="metric-value">98%</div><div class="metric-label">O2 Sat</div></div>
+                    </div>
+                </div>
+                
+                <!-- BMI Calculator Card -->
+                <div class="dashboard-card">
+                    <h3><i class="fas fa-weight"></i> BMI Calculator</h3>
+                    <div class="bmi-calculator">
+                        <div class="form-group">
+                            <label for="bmi-height">Height (cm)</label>
+                            <input type="number" id="bmi-height" class="form-control" placeholder="Enter height in cm">
+                        </div>
+                        <div class="form-group">
+                            <label for="bmi-weight">Weight (kg)</label>
+                            <input type="number" id="bmi-weight" class="form-control" placeholder="Enter weight in kg">
+                        </div>
+                        <button class="btn btn-primary" id="calculate-bmi" style="width: 100%;">Calculate BMI</button>
+                        
+                        <div class="bmi-result" id="bmi-result">
+                            <div class="metric-value" id="bmi-value">--</div>
+                            <div class="bmi-category" id="bmi-category">--</div>
+                            <div id="bmi-range" style="margin-top: 0.5rem; font-size: 0.9rem;"></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="dashboard-card">
+                    <h3><i class="fas fa-calendar-check"></i> Upcoming Appointments</h3>
+                    <ul class="appointment-list">
+                        <li>
+                            <div class="list-item-content"><strong>Dr. Ram Kumar</strong> - Cardiology<br>Today, 2:00 PM <span class="badge badge-telemedicine">Video</span></div>
+                            <div class="list-item-actions"><button class="btn btn-outline join-call"><i class="fas fa-video"></i> Join</button></div>
+                        </li>
+                    </ul>
+                </div>
+                <div class="dashboard-card">
+                    <h3><i class="fas fa-prescription"></i> Current Medications</h3>
+                    <ul class="medication-list">
+                         <li><div class="list-item-content"><strong>Atorvastatin</strong> - 20mg<br><small>Take 1 tablet daily with dinner</small></div><div class="list-item-actions"><span class="badge badge-success">Active</span></div></li>
+                         <li><div class="list-item-content"><strong>Metformin</strong> - 500mg<br><small>Take 1 tablet twice daily</small></div><div class="list-item-actions"><span class="badge badge-success">Active</span></div></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Enhanced Doctor Dashboard -->
+    <div class="dashboard" id="doctor-dashboard">
+        <div class="container">
+            <div class="dashboard-header">
+                <div class="user-info">
+                    <div class="user-avatar doctor">RK<div class="user-status"></div></div>
+                    <div><h2>Welcome, Dr. Ram Kumar</h2><p>Cardiology Department</p></div>
+                </div>
+                <div class="dashboard-actions">
+                    <button class="btn btn-telemedicine" id="doctor-video-consult"><i class="fas fa-video"></i> Start Consultation</button>
+                    <button class="btn btn-ai" id="doctor-ai-assistant"><i class="fas fa-robot"></i> Clinical AI</button>
+                    <button class="btn btn-outline" id="doctor-logout"><i class="fas fa-sign-out-alt"></i> Logout</button>
+                </div>
+            </div>
+            <div class="dashboard-grid">
+                <!-- Today's Appointments -->
+                <div class="dashboard-card">
+                    <h3><i class="fas fa-user-injured"></i> Today's Appointments</h3>
+                    <div class="patient-card">
+                        <div style="display: flex; justify-content: between; align-items: center;">
+                            <div>
+                                <strong>Vedha P.</strong> - 2:00 PM <span class="badge badge-telemedicine">Video</span>
+                                <div><small>Follow-up for hypertension</small></div>
+                            </div>
+                            <div class="list-item-actions">
+                                <button class="btn btn-success start-call"><i class="fas fa-video"></i> Start</button>
+                                <button class="btn btn-outline view-chart"><i class="fas fa-file-medical"></i> Chart</button>
+                            </div>
+                        </div>
+                        <div class="patient-vitals">
+                            <div class="vital-item">
+                                <div class="vital-value">142/88</div>
+                                <div class="vital-label">BP</div>
+                            </div>
+                            <div class="vital-item">
+                                <div class="vital-value">78</div>
+                                <div class="vital-label">BPM</div>
+                            </div>
+                            <div class="vital-item">
+                                <div class="vital-value">98.4°F</div>
+                                <div class="vital-label">Temp</div>
+                            </div>
+                            <div class="vital-item">
+                                <div class="vital-value">97%</div>
+                                <div class="vital-label">O2</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="patient-card">
+                        <div style="display: flex; justify-content: between; align-items: center;">
+                            <div>
+                                <strong>Priya S.</strong> - 3:30 PM <span class="badge badge-info">In-Person</span>
+                                <div><small>New patient consultation</small></div>
+                            </div>
+                            <div class="list-item-actions">
+                                <button class="btn btn-outline view-chart"><i class="fas fa-file-medical"></i> Chart</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Patient Roster -->
+                <div class="dashboard-card">
+                    <h3><i class="fas fa-users"></i> Patient Roster</h3>
+                    <div class="search-box" style="margin-bottom: 1rem;">
+                        <input type="text" placeholder="Search patients..." class="form-control" id="patient-search">
+                    </div>
+                    <div class="patient-card success">
+                        <div style="display: flex; justify-content: between; align-items: center;">
+                            <div>
+                                <strong>Vedha P.</strong>
+                                <div><small>Age: 35 | Last Visit: 2 weeks ago</small></div>
+                            </div>
+                            <div class="list-item-actions">
+                                <button class="btn btn-outline view-medical-history"><i class="fas fa-file-medical"></i></button>
+                                <button class="btn btn-outline message-patient"><i class="fas fa-comment-medical"></i></button>
+                            </div>
+                        </div>
+                        <div class="progress-container">
+                            <div style="display: flex; justify-content: between; font-size: 0.8rem;">
+                                <span>BP Control</span>
+                                <span>75%</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 75%"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="patient-card warning">
+                        <div style="display: flex; justify-content: between; align-items: center;">
+                            <div>
+                                <strong>Priya S.</strong>
+                                <div><small>Age: 42 | Last Visit: 1 month ago</small></div>
+                            </div>
+                            <div class="list-item-actions">
+                                <button class="btn btn-outline view-medical-history"><i class="fas fa-file-medical"></i></button>
+                                <button class="btn btn-outline message-patient"><i class="fas fa-comment-medical"></i></button>
+                            </div>
+                        </div>
+                        <div class="progress-container">
+                            <div style="display: flex; justify-content: between; font-size: 0.8rem;">
+                                <span>Medication Adherence</span>
+                                <span>60%</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 60%"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Prescription Requests -->
+                <div class="dashboard-card">
+                    <h3><i class="fas fa-prescription"></i> Prescription Requests</h3>
+                    <div class="patient-card">
+                        <div style="display: flex; justify-content: between; align-items: center;">
+                            <div>
+                                <strong>Vedha P.</strong>
+                                <div>Atorvastatin 20mg - Refill Request</div>
+                            </div>
+                            <div class="appointment-actions">
+                                <button class="btn btn-success approve-rx" data-patient="Vedha P."><i class="fas fa-check"></i> Approve</button>
+                                <button class="btn btn-warning modify-rx" data-patient="Vedha P."><i class="fas fa-edit"></i> Modify</button>
+                                <button class="btn btn-danger deny-rx" data-patient="Vedha P."><i class="fas fa-times"></i> Deny</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Clinical Notes -->
+                <div class="dashboard-card">
+                    <h3><i class="fas fa-notes-medical"></i> Clinical Notes</h3>
+                    <div class="quick-notes">
+                        <textarea placeholder="Add clinical notes for current patient..." class="form-control" rows="3" id="clinical-notes"></textarea>
+                        <button class="btn btn-success" style="margin-top: 10px; width: 100%;" id="save-notes"><i class="fas fa-save"></i> Save to Chart</button>
+                    </div>
+                    <div class="note-templates" style="margin-top: 1rem; display: flex; gap: 0.5rem;">
+                        <button class="btn btn-outline template-btn" data-template="followup">Follow-up Note</button>
+                        <button class="btn btn-outline template-btn" data-template="consultation">Consultation Note</button>
+                    </div>
+                    <div class="soap-template" id="soap-template">
+                        <h4>SOAP Note Template</h4>
+                        <div class="form-group">
+                            <label>Subjective</label>
+                            <textarea class="form-control" rows="2" placeholder="Patient's complaints, symptoms..."></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label>Objective</label>
+                            <textarea class="form-control" rows="2" placeholder="Vital signs, exam findings..."></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label>Assessment</label>
+                            <textarea class="form-control" rows="2" placeholder="Diagnosis, differentials..."></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label>Plan</label>
+                            <textarea class="form-control" rows="2" placeholder="Treatment plan, medications..."></textarea>
+                        </div>
+                        <button class="btn btn-primary" style="width: 100%;">Use Template</button>
+                    </div>
+                </div>
+                
+                <!-- Clinical AI Assistant -->
+                <div class="dashboard-card ai">
+                    <h3><i class="fas fa-robot"></i> Clinical AI Assistant</h3>
+                    <div style="margin: 1rem 0;">
+                        <div class="patient-card">
+                            <strong>Vedha P.: Low risk for cardiovascular events</strong>
+                            <div>Recommended: Continue current medication, add lifestyle modifications</div>
+                        </div>
+                        <div class="patient-card" style="margin-top: 1rem;">
+                            <strong>Drug Interaction Alert</strong>
+                            <div>Metformin + Atorvastatin: Monitor for muscle pain</div>
+                        </div>
+                    </div>
+                    <button class="btn btn-ai clinical-ai-tool" style="width: 100%;"><i class="fas fa-brain"></i> Generate Treatment Plans</button>
+                </div>
+                
+                <!-- Quick Actions -->
+                <div class="dashboard-card">
+                    <h3><i class="fas fa-bolt"></i> Quick Actions</h3>
+                    <div class="quick-actions-grid">
+                        <button class="quick-action-btn" id="soap-note-btn">
+                            <i class="fas fa-notes-medical"></i>
+                            <span>SOAP Note</span>
+                        </button>
+                        <button class="quick-action-btn" id="create-referral-btn">
+                            <i class="fas fa-referral"></i>
+                            <span>Create Referral</span>
+                        </button>
+                        <button class="quick-action-btn" id="new-prescription-btn">
+                            <i class="fas fa-file-prescription"></i>
+                            <span>New Rx</span>
+                        </button>
+                        <button class="quick-action-btn" id="order-labs-btn">
+                            <i class="fas fa-lab"></i>
+                            <span>Order Labs</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                 <div class="footer-column"><h3>Meditrack</h3><p>Your complete Indian health management platform.</p></div>
+                 <div class="footer-column"><h3>Quick Links</h3><ul><li><a href="#features">Features</a></li><li><a href="#security">Security</a></li><li><a href="#indian-health">Indian Healthcare</a></li></ul></div>
+                 <div class="footer-column"><h3>Contact Us</h3><ul><li><i class="fas fa-map-marker-alt"></i> KLH Hospital, Bahupally</li><li><i class="fas fa-phone"></i> +91 98765 43210</li><li><i class="fas fa-envelope"></i> support@meditrack.in</li></ul></div>
+            </div>
+            <div class="copyright"><p>© 2023 Meditrack. All rights reserved.</p></div>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // === DOM Elements ===
+            const loginBtn = document.getElementById('login-btn');
+            const getStartedBtn = document.getElementById('get-started-btn');
+            const emergencyBtn = document.getElementById('emergency-btn');
+            const loginModal = document.getElementById('login-modal');
+            const loginForm = document.getElementById('login-form');
+            const loginSubmit = document.getElementById('login-submit');
+            const userTypeBtns = document.querySelectorAll('.user-type-btn');
+            
+            const patientDashboard = document.getElementById('patient-dashboard');
+            const doctorDashboard = document.getElementById('doctor-dashboard');
+            const patientLogout = document.getElementById('patient-logout');
+            const doctorLogout = document.getElementById('doctor-logout');
+
+            const patientAIBtn = document.getElementById('patient-ai-assistant');
+            const doctorAIBtn = document.getElementById('doctor-ai-assistant');
+            const aiAssistantModal = document.getElementById('ai-assistant-modal');
+            const aiSendBtn = document.getElementById('ai-send-btn');
+            const aiChatInput = document.getElementById('ai-chat-input');
+            const aiChatMessages = document.getElementById('ai-chat-messages');
+            const aiSuggestionBtns = document.querySelectorAll('.ai-suggestion-btn');
+            
+            const bookAppointmentBtn = document.getElementById('book-appointment-btn');
+            const bookAppointmentModal = document.getElementById('book-appointment-modal');
+            const appointmentForm = document.getElementById('appointment-form');
+            const doctorOptions = document.querySelectorAll('.doctor-option');
+            
+            const darkModeToggle = document.getElementById('dark-mode-toggle');
+            const doctorNotification = document.getElementById('doctor-notification');
+            const doctorAppointmentsModal = document.getElementById('doctor-appointments-modal');
+            const closeAppointmentsBtn = document.getElementById('close-appointments-btn');
+            const viewPatientDetailsBtn = document.getElementById('view-patient-details-btn');
+
+            // BMI Calculator Elements
+            const calculateBmiBtn = document.getElementById('calculate-bmi');
+            const bmiHeight = document.getElementById('bmi-height');
+            const bmiWeight = document.getElementById('bmi-weight');
+            const bmiResult = document.getElementById('bmi-result');
+            const bmiValue = document.getElementById('bmi-value');
+            const bmiCategory = document.getElementById('bmi-category');
+            const bmiRange = document.getElementById('bmi-range');
+
+            // Doctor Portal Elements
+            const soapNoteBtn = document.getElementById('soap-note-btn');
+            const soapTemplate = document.getElementById('soap-template');
+            const templateBtns = document.querySelectorAll('.template-btn');
+            const saveNotesBtn = document.getElementById('save-notes');
+            const clinicalNotes = document.getElementById('clinical-notes');
+
+            // === Updated Demo Credentials ===
+            // === Updated Demo Credentials ===
+const demoCredentials = {
+    patient: [{ username: 'vedha@meditrack.com', password: '1234', name: 'Vedha P.' }],
+    doctor: [{ username: 'dr.ram@meditrack.com', password: '1234', name: 'Dr. Ram Kumar' }]
+};
+
+            // === Toast Notification Function ===
+            function showToast(message, type = 'info') {
+                const toastContainer = document.getElementById('toast-container');
+                const toast = document.createElement('div');
+                toast.className = `toast ${type}`;
+                toast.innerHTML = `<i class="fas fa-${type === 'success' ? 'check-circle' : type === 'error' ? 'exclamation-circle' : 'info-circle'}"></i> ${message}`;
+                toastContainer.appendChild(toast);
+                setTimeout(() => toast.remove(), 5000);
+            }
+
+            // === Dark Mode Functionality ===
+            function enableDarkMode() {
+                document.body.classList.add('dark-mode');
+                localStorage.setItem('darkMode', 'enabled');
+                darkModeToggle.checked = true;
+            }
+
+            function disableDarkMode() {
+                document.body.classList.remove('dark-mode');
+                localStorage.setItem('darkMode', null);
+                darkModeToggle.checked = false;
+            }
+
+            if (localStorage.getItem('darkMode') === 'enabled') {
+                enableDarkMode();
+            }
+
+            darkModeToggle.addEventListener('change', () => {
+                if (darkModeToggle.checked) {
+                    enableDarkMode();
+                } else {
+                    disableDarkMode();
+                }
+            });
+
+            // === Modal Management ===
+            function openModal(modal) { modal.style.display = 'flex'; }
+            function closeModal(modal) { modal.style.display = 'none'; }
+
+            loginBtn.addEventListener('click', (e) => { e.preventDefault(); openModal(loginModal); });
+            getStartedBtn.addEventListener('click', (e) => { e.preventDefault(); openModal(loginModal); });
+            patientAIBtn.addEventListener('click', () => { openModal(aiAssistantModal); });
+            doctorAIBtn.addEventListener('click', () => { openModal(aiAssistantModal); });
+            bookAppointmentBtn.addEventListener('click', () => openModal(bookAppointmentModal));
+            
+            // Doctor notification click
+            doctorNotification.addEventListener('click', () => {
+                openModal(doctorAppointmentsModal);
+            });
+
+            closeAppointmentsBtn.addEventListener('click', () => closeModal(doctorAppointmentsModal));
+            viewPatientDetailsBtn.addEventListener('click', () => {
+                showToast('Redirecting to patient details...', 'info');
+                setTimeout(() => closeModal(doctorAppointmentsModal), 1000);
+            });
+            
+            document.querySelectorAll('.close-modal').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    closeModal(loginModal);
+                    closeModal(aiAssistantModal);
+                    closeModal(bookAppointmentModal);
+                    closeModal(doctorAppointmentsModal);
+                });
+            });
+
+            window.addEventListener('click', (e) => {
+                if (e.target === loginModal) closeModal(loginModal);
+                if (e.target === aiAssistantModal) closeModal(aiAssistantModal);
+                if (e.target === bookAppointmentModal) closeModal(bookAppointmentModal);
+                if (e.target === doctorAppointmentsModal) closeModal(doctorAppointmentsModal);
+            });
+            
+            // === Doctor Selection Logic ===
+            let selectedDoctor = null;
+            doctorOptions.forEach(option => {
+                option.addEventListener('click', () => {
+                    doctorOptions.forEach(opt => opt.classList.remove('selected'));
+                    option.classList.add('selected');
+                    selectedDoctor = option.dataset.doctor;
+                });
+            });
+
+            // === Appointment Booking Logic ===
+            appointmentForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                
+                if (!selectedDoctor) {
+                    showToast('Please select a doctor', 'error');
+                    return;
+                }
+
+                const date = document.getElementById('appointment-date').value;
+                const time = document.getElementById('appointment-time').value;
+                const type = document.getElementById('appointment-type').value;
+                const reason = document.getElementById('appointment-reason').value;
+
+                if (!date || !time || !type) {
+                    showToast('Please fill all required fields', 'error');
+                    return;
+                }
+
+                // Get selected doctor name
+                const selectedOption = document.querySelector('.doctor-option.selected');
+                const doctorName = selectedOption.querySelector('strong').textContent;
+                const specialty = selectedOption.querySelector('.doctor-specialty').textContent;
+
+                showToast(`Appointment booked with ${doctorName} for ${date} at ${time}`, 'success');
+                closeModal(bookAppointmentModal);
+                
+                // Reset form
+                appointmentForm.reset();
+                doctorOptions.forEach(opt => opt.classList.remove('selected'));
+                selectedDoctor = null;
+            });
+
+            // === Login/Logout Logic ===
+            userTypeBtns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    userTypeBtns.forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    loginSubmit.className = `btn ${btn.dataset.type === 'doctor' ? 'btn-doctor' : 'btn-patient'}`;
+                });
+            });
+
+            loginForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                const username = document.getElementById('username').value;
+                const password = document.getElementById('password').value;
+                const userType = document.querySelector('.user-type-btn.active').dataset.type;
+                
+                let user = (demoCredentials[userType] || []).find(cred => cred.username === username && cred.password === password);
+                
+                if (user) {
+                    showToast(`Welcome, ${user.name}!`, 'success');
+                    closeModal(loginModal);
+                    
+                    document.querySelector('.hero').style.display = 'none';
+                    document.querySelectorAll('.features').forEach(s => s.style.display = 'none');
+                    document.querySelector('.indian-health-section').style.display = 'none';
+                    document.querySelector('footer').style.display = 'none';
+
+                    if (userType === 'patient') {
+                        document.getElementById('patient-welcome-name').textContent = `Welcome back, ${user.name}`;
+                        patientDashboard.style.display = 'block';
+                    } else {
+                        doctorDashboard.style.display = 'block';
+                        // Show notification for doctor
+                        setTimeout(() => {
+                            doctorNotification.style.display = 'flex';
+                        }, 1000);
+                    }
+                } else {
+                    showToast('Invalid credentials. Please try again.', 'error');
+                }
+            });
+
+            function logout() {
+                patientDashboard.style.display = 'none';
+                doctorDashboard.style.display = 'none';
+                doctorNotification.style.display = 'none';
+                document.querySelector('.hero').style.display = 'block';
+                document.querySelectorAll('.features').forEach(s => s.style.display = 'block');
+                document.querySelector('.indian-health-section').style.display = 'block';
+                document.querySelector('footer').style.display = 'block';
+                showToast('You have been logged out.', 'info');
+            }
+            patientLogout.addEventListener('click', logout);
+            doctorLogout.addEventListener('click', logout);
+
+            // === Button Functionality ===
+            emergencyBtn.addEventListener('click', () => showToast('Emergency mode activated. Connecting services...', 'error'));
+            document.getElementById('patient-video-consult').addEventListener('click', () => showToast('Starting video consultation service...', 'info'));
+            document.getElementById('doctor-video-consult').addEventListener('click', () => showToast('Opening clinical video portal...', 'info'));
+            document.querySelectorAll('.join-call, .start-call').forEach(btn => btn.addEventListener('click', () => showToast('Joining video call...', 'success')));
+            document.getElementById('patient-ayurveda').addEventListener('click', () => showToast('Opening Ayurvedic wellness portal...', 'info'));
+
+            document.querySelectorAll('.approve-rx, .modify-rx, .deny-rx').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    const action = e.currentTarget.classList.contains('approve-rx') ? 'Approved' : (e.currentTarget.classList.contains('modify-rx') ? 'Modification screen opened for' : 'Denied');
+                    const patient = e.currentTarget.dataset.patient;
+                    showToast(`Prescription for ${patient} ${action}.`, 'success');
+                });
+            });
+
+            // === BMI Calculator Logic ===
+            calculateBmiBtn.addEventListener('click', () => {
+                const height = parseFloat(bmiHeight.value) / 100; // Convert cm to m
+                const weight = parseFloat(bmiWeight.value);
+                
+                if (height > 0 && weight > 0) {
+                    const bmi = (weight / (height * height)).toFixed(1);
+                    let category = '';
+                    let categoryClass = '';
+                    
+                    if (bmi < 18.5) {
+                        category = 'Underweight';
+                        categoryClass = 'bmi-underweight';
+                    } else if (bmi < 25) {
+                        category = 'Normal weight';
+                        categoryClass = 'bmi-normal';
+                    } else if (bmi < 30) {
+                        category = 'Overweight';
+                        categoryClass = 'bmi-overweight';
+                    } else {
+                        category = 'Obese';
+                        categoryClass = 'bmi-obese';
+                    }
+                    
+                    // Calculate healthy weight range
+                    const minWeight = (18.5 * height * height).toFixed(1);
+                    const maxWeight = (24.9 * height * height).toFixed(1);
+                    
+                    bmiValue.textContent = bmi;
+                    bmiCategory.textContent = category;
+                    bmiCategory.className = `bmi-category ${categoryClass}`;
+                    bmiRange.textContent = `Healthy weight range: ${minWeight} - ${maxWeight} kg`;
+                    
+                    bmiResult.style.display = 'block';
+                } else {
+                    showToast('Please enter valid height and weight values.', 'error');
+                }
+            });
+
+            // === Doctor Portal Enhancements ===
+            
+            // SOAP Note Button
+            soapNoteBtn.addEventListener('click', () => {
+                soapTemplate.style.display = soapTemplate.style.display === 'block' ? 'none' : 'block';
+            });
+            
+            // Template Buttons
+            templateBtns.forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    const template = e.currentTarget.dataset.template;
+                    let content = '';
+                    
+                    if (template === 'followup') {
+                        content = 'Patient reports improvement in symptoms. Vital signs stable. Continue current treatment plan. Follow up in 2 weeks.';
+                    } else if (template === 'consultation') {
+                        content = 'New patient consultation completed. Comprehensive assessment performed. Treatment plan discussed and initiated.';
+                    }
+                    
+                    clinicalNotes.value = content;
+                    showToast(`${template.replace('-', ' ')} template loaded`, 'success');
+                });
+            });
+            
+            // Save Notes
+            saveNotesBtn.addEventListener('click', () => {
+                if (clinicalNotes.value.trim()) {
+                    showToast('Clinical notes saved to patient chart', 'success');
+                    clinicalNotes.value = '';
+                } else {
+                    showToast('Please enter some notes before saving', 'error');
+                }
+            });
+            
+            // Quick Action Buttons
+            document.getElementById('create-referral-btn').addEventListener('click', () => {
+                showToast('Opening referral creation tool...', 'info');
+            });
+            
+            document.getElementById('new-prescription-btn').addEventListener('click', () => {
+                showToast('Opening prescription writer...', 'info');
+            });
+            
+            document.getElementById('order-labs-btn').addEventListener('click', () => {
+                showToast('Opening lab order form...', 'info');
+            });
+            
+            // Patient Search
+            document.getElementById('patient-search').addEventListener('input', (e) => {
+                const searchTerm = e.target.value.toLowerCase();
+                const patientCards = document.querySelectorAll('.patient-card');
+                
+                patientCards.forEach(card => {
+                    const patientName = card.querySelector('strong').textContent.toLowerCase();
+                    if (patientName.includes(searchTerm)) {
+                        card.style.display = 'block';
+                    } else {
+                        card.style.display = 'none';
+                    }
+                });
+            });
+
+            // === Improved AI Assistant Logic ===
+            function addAiMessage(content, sender = 'ai') {
+                const messageEl = document.createElement('div');
+                messageEl.className = `chat-message ${sender}`;
+                const timestamp = new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+                
+                if (sender === 'ai') {
+                    messageEl.innerHTML = `<strong>MediAI:</strong> ${content}<div class="message-time">${timestamp}</div>`;
+                } else {
+                    messageEl.innerHTML = `<strong>You:</strong> ${content}<div class="message-time">${timestamp}</div>`;
+                }
+                
+                aiChatMessages.appendChild(messageEl);
+                aiChatMessages.scrollTop = aiChatMessages.scrollHeight;
+            }
+
+            function getAiResponse(message) {
+                const msg = message.toLowerCase();
+                
+                // Enhanced responses with more detailed information
+                if (msg.includes('headache')) {
+                    return "Headaches can have various causes. Common remedies include:\n\n• Rest in a quiet, dark room\n• Stay hydrated\n• Apply a cool compress\n• Gentle massage\n• Over-the-counter pain relief if appropriate\n\nAyurvedic remedies:\n• Brahmi oil application on forehead\n• Ginger tea with honey\n• Nasya (nasal drops) with Anu Taila\n\nConsult a doctor if headaches are severe, frequent, or accompanied by other symptoms.";
+                }
+                
+                if (msg.includes('fever')) {
+                    return "For fever management:\n\n• Rest and stay hydrated\n• Monitor temperature regularly\n• Use cool compresses\n• Light, easy-to-digest foods\n\nAyurvedic approaches:\n• Tulsi (Holy Basil) tea\n• Coriander seed infusion\n• Ginger with honey\n• Stay on a light diet (kichadi)\n\nSeek medical attention if:\n• Fever is over 103°F (39.4°C)\n• Lasts more than 3 days\n• Accompanied by severe symptoms";
+                }
+                
+                if (msg.includes('stress') || msg.includes('anxiety')) {
+                    return "Stress management techniques:\n\n• Practice deep breathing (Pranayama)\n• Regular meditation\n• Gentle yoga (Shavasana, Balasana)\n• Maintain a regular sleep schedule\n\nAyurvedic support:\n• Ashwagandha supplements\n• Brahmi for mental clarity\n• Jatamansi for relaxation\n• Warm milk with nutmeg at bedtime";
+                }
+                
+                if (msg.includes('digestion') || msg.includes('stomach')) {
+                    return "For digestive issues:\n\n• Eat meals at regular times\n• Chew food thoroughly\n• Stay hydrated between meals\n• Avoid heavy, fried foods\n\nAyurvedic remedies:\n• Triphala for regular digestion\n• Ginger tea before meals\n• Fennel seeds after meals\n• Buttermilk with cumin for digestion";
+                }
+                
+                if (msg.includes('sleep') || msg.includes('insomnia')) {
+                    return "For better sleep:\n\n• Maintain consistent sleep schedule\n• Create a relaxing bedtime routine\n• Avoid screens before bed\n• Keep bedroom dark and cool\n\nAyurvedic solutions:\n• Warm milk with nutmeg\n• Brahmi or Ashwagandha supplements\n• Shirodhara (oil dripping) therapy\n• Nasya with Brahmi ghee";
+                }
+                
+                if (msg.includes('medication') || msg.includes('pills')) {
+                    return "I can provide general medication information. However, for specific questions about:\n\n• Dosage instructions\n• Side effects\n• Drug interactions\n• Administration guidelines\n\nPlease consult your doctor or pharmacist for personalized advice. Never change medication without professional guidance.";
+                }
+                
+                if (msg.includes('ayurved') || msg.includes('herbal')) {
+                    return "Ayurvedic principles focus on balance. Key approaches:\n\n• Follow seasonal routines (Ritucharya)\n• Eat according to your constitution (Prakriti)\n• Practice daily self-care (Dinacharya)\n• Use herbs appropriately for your needs\n\nCommon Ayurvedic remedies:\n• Turmeric for inflammation\n• Triphala for digestion\n• Ashwagandha for stress\n• Brahmi for brain health";
+                }
+                
+                if (msg.includes('yoga') || msg.includes('asanas')) {
+                    return "Yoga recommendations:\n\nFor beginners:\n• Surya Namaskar (Sun Salutation)\n• Tadasana (Mountain Pose)\n• Vrikshasana (Tree Pose)\n\nFor stress relief:\n• Balasana (Child's Pose)\n• Shavasana (Corpse Pose)\n• Anulom Vilom (Alternate Nostril Breathing)\n\nAlways practice under guidance if you have health conditions.";
+                }
+                
+                // Default response
+                return "I can help with general health questions, Ayurvedic remedies, yoga recommendations, or medication information. For specific medical advice, diagnosis, or treatment, please consult your healthcare provider. What would you like to know more about?";
+            }
+            
+            function handleAiInteraction() {
+                const message = aiChatInput.value.trim();
+                if (!message) return;
+                
+                addAiMessage(message, 'user');
+                aiChatInput.value = '';
+                
+                // Show typing indicator
+                const typingIndicator = document.createElement('div');
+                typingIndicator.className = 'chat-message ai';
+                typingIndicator.innerHTML = '<strong>MediAI:</strong> <i>Typing...</i>';
+                aiChatMessages.appendChild(typingIndicator);
+                aiChatMessages.scrollTop = aiChatMessages.scrollHeight;
+                
+                setTimeout(() => {
+                    typingIndicator.remove();
+                    const response = getAiResponse(message);
+                    addAiMessage(response);
+                }, 1500);
+            }
+
+            aiSendBtn.addEventListener('click', handleAiInteraction);
+            aiChatInput.addEventListener('keypress', (e) => { 
+                if (e.key === 'Enter') handleAiInteraction(); 
+            });
+
+            // AI suggestion buttons
+            aiSuggestionBtns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const topic = btn.dataset.topic;
+                    const questions = {
+                        headache: "What can I do for headache relief?",
+                        fever: "How should I manage a fever?",
+                        stress: "What are good ways to reduce stress?",
+                        digestion: "I'm having digestion issues, what helps?",
+                        sleep: "How can I improve my sleep quality?"
+                    };
+                    aiChatInput.value = questions[topic] || `Tell me about ${topic}`;
+                    handleAiInteraction();
+                });
+            });
+        });
+    </script>
+</body>
+</html>
